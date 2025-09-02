@@ -1,0 +1,75 @@
+with spotify as (
+    select
+        {{ dbt_utils.generate_surrogate_key(['order_id']) }} as transaction_sk,
+        {{ dbt_utils.generate_surrogate_key(['product_sku']) }} as product_sk,
+        order_id::text as transaction_id,
+        null::text as customer_id,
+        product_sku::text as product_id,
+        null::text as product_name,
+        category::text as category,
+        quantity_sold::numeric(10,2) as quantity_sold,
+        unit_price::numeric(10,2) as unit_price,
+        to_timestamp(transaction_date, 'MM/DD/YYYY HH24:MI') as transaction_date,
+        null::text as store_id,
+        null::text as store_location,
+        null::numeric as inventory_level,
+        null::numeric as reorder_point,
+        null::numeric as reorder_quantity,
+        null::text as supplier_id,
+        null::numeric as supplier_lead_time,
+        null::numeric as customer_age,
+        null::text as customer_gender,
+        null::numeric as customer_income,
+        null::text as customer_loyalty_level,
+        payment_method::text as payment_method,
+        null::text as promotion_applied,
+        null::text as promotion_type,
+        null::text as weather_conditions,
+        null::text as holiday_indicator,
+        cast (extract(dow from to_timestamp(transaction_date, 'MM/DD/YYYY HH24:MI')) as text) as weekday,
+        null::text as stockout_indicator,
+        null::numeric as forecasted_demand,
+        sales_amount::numeric(10,2) as actual_demand,
+        'online' as transtype
+    from {{ref('Source_spotify') }}
+),
+
+walmart as (
+    select
+        {{ dbt_utils.generate_surrogate_key(['transaction_id']) }} as transaction_sk,
+        {{ dbt_utils.generate_surrogate_key(['product_id']) }} as product_sk,
+        transaction_id::text as transaction_id,
+        customer_id::text as customer_id,
+        product_id::text as product_id,
+        product_name::text as product_name,
+        category::text as category,
+        quantity_sold::numeric(10,2) as quantity_sold,
+        unit_price::numeric(10,2) as unit_price,
+        to_timestamp(transaction_date, 'MM/DD/YYYY HH24:MI') as transaction_date,
+        store_id::text as store_id,
+        store_location::text as store_location,
+        inventory_level::numeric as inventory_level,
+        reorder_point::numeric as reorder_point,
+        reorder_quantity::numeric as reorder_quantity,
+        supplier_id::text as supplier_id,
+        supplier_lead_time::numeric as supplier_lead_time,
+        customer_age::numeric as customer_age,
+        customer_gender::text as customer_gender,
+        customer_income::numeric as customer_income,
+        customer_loyalty_level::text as customer_loyalty_level,
+        payment_method::text as payment_method,
+        promotion_applied::text as promotion_applied,
+        promotion_type::text as promotion_type,
+        weather_conditions::text as weather_conditions,
+        holiday_indicator::text as holiday_indicator,
+        weekday::text as weekday,
+        stockout_indicator::text as stockout_indicator,
+        forecasted_demand::numeric as forecasted_demand,
+        actual_demand::numeric(10,2) as actual_demand,
+        'offline' as transtype
+    from {{ ref('WM_Source') }}
+)
+
+select * from walmart
+union all
+select * from spotify

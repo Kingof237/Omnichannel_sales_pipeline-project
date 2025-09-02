@@ -1,0 +1,50 @@
+# --------------------------
+# Python / Airflow
+# --------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env
+airflow.cfg
+logs/
+*.log
+tmp/
+
+# --------------------------
+# dbt
+# --------------------------
+target/
+dbt_packages/
+dbt_modules/
+profiles.yml
+compiled/
+logs/
+
+# --------------------------
+# Docker
+# --------------------------
+*.env
+docker-compose.override.yml
+docker-compose.local.yml
+*.pid
+*.sock
+**/tmp/
+
+# --------------------------
+# OS generated files
+# --------------------------
+.DS_Store
+Thumbs.db
+
+# --------------------------
+# VS Code
+# --------------------------
+.vscode/
+*.code-workspace
+
+# --------------------------
+# Jupyter
+# --------------------------
+.ipynb_checkpoints/

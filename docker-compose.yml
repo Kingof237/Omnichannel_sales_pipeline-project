@@ -1,0 +1,102 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  airflow-init:
+    image: myproject1:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      AIRFLOW_ADMIN_USER: ${AIRFLOW_ADMIN_USER}
+      AIRFLOW_ADMIN_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD}
+    entrypoint: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create --username ${AIRFLOW_ADMIN_USER} --password ${AIRFLOW_ADMIN_PASSWORD} --firstname Admin --lastname User --role Admin --email admin@example.com || echo 'Admin user already exists'
+      "
+    restart: "no"
+
+  airflow-webserver:
+    image: myproject1:latest
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_WEBSERVER_SECRET_KEY}
+
+      MOCKAROO_API_KEY: ${MOCKAROO_API_KEY}
+      MOCKAROO_SCHEMA_ID: ${MOCKAROO_SCHEMA_ID}
+      MOCKAROO_NUM_ROWS: ${MOCKAROO_NUM_ROWS}
+
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_SCHEMA: ${PG_SCHEMA}
+      PG_TABLE: ${PG_TABLE}
+      PG_TABLE1: ${PG_TABLE1}
+
+      KAGGLE_CONFIG_DIR: ${KAGGLE_CONFIG_DIR}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./ETL:/opt/airflow/ETL
+      - ./dbt:/opt/airflow/dbt
+      - ./kaggle:/opt/airflow/kaggle:ro
+    command: webserver
+    restart: always
+
+  airflow-scheduler:
+    image: myproject1:latest
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_WEBSERVER_SECRET_KEY}
+
+      MOCKAROO_API_KEY: ${MOCKAROO_API_KEY}
+      MOCKAROO_SCHEMA_ID: ${MOCKAROO_SCHEMA_ID}
+      MOCKAROO_NUM_ROWS: ${MOCKAROO_NUM_ROWS}
+
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_SCHEMA: ${PG_SCHEMA}
+      PG_TABLE: ${PG_TABLE}
+      PG_TABLE1: ${PG_TABLE1}
+
+      KAGGLE_CONFIG_DIR: ${KAGGLE_CONFIG_DIR}
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./ETL:/opt/airflow/ETL
+      - ./dbt:/opt/airflow/dbt
+      - ./kaggle:/opt/airflow/kaggle:ro
+    command: scheduler
+    restart: always
+
+volumes:
+  postgres_data:

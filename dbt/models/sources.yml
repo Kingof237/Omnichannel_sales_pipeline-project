@@ -1,0 +1,111 @@
+version: 2
+
+sources:
+  - name: Walmart_data
+    description: "Raw data from Walmart including sales and Spotify data"
+    database: omnichannel      # Replace with your database/schema details
+    schema: omni_lake                        # Replace with your schema name
+    tables:
+      - name: walmart_sales
+        description: "Walmart sales transactions"
+        columns:
+          - name: transaction_id
+            description: "Unique transaction ID"
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            description: "Customer ID"
+          - name: product_id
+            description: "Product ID"
+            tests:
+              - not_null
+          - name: product_name
+            description: "Product name"
+          - name: category
+            description: "Product category"
+          - name: quantity_sold
+            description: "Quantity sold"
+            tests:
+              - not_null
+          - name: unit_price
+            description: "Unit price"
+            tests:
+              - not_null
+          - name: transaction_date
+            description: "Date and time of transaction"
+            tests:
+              - not_null
+          - name: store_id
+            description: "Store ID"
+          - name: store_location
+            description: "Store location"
+          - name: inventory_level
+            description: "Inventory level at time of sale"
+          - name: reorder_point
+            description: "Reorder point"
+          - name: reorder_quantity
+            description: "Reorder quantity"
+          - name: supplier_id
+            description: "Supplier ID"
+          - name: supplier_lead_time
+            description: "Supplier lead time"
+          - name: customer_age
+            description: "Customer age"
+          - name: customer_gender
+            description: "Customer gender"
+          - name: customer_income
+            description: "Customer income"
+          - name: customer_loyalty_level
+            description: "Customer loyalty level"
+          - name: payment_method
+            description: "Payment method used"
+          - name: promotion_applied
+            description: "Promotion applied"
+          - name: promotion_type
+            description: "Type of promotion"
+          - name: weather_conditions
+            description: "Weather conditions during sale"
+          - name: holiday_indicator
+            description: "Indicator if transaction occurred on a holiday"
+          - name: weekday
+            description: "Day of the week of transaction"
+          - name: stockout_indicator
+            description: "Stockout flag"
+          - name: forecasted_demand
+            description: "Forecasted demand"
+          - name: actual_demand
+            description: "Actual sales amount"
+
+      - name: spotify_data
+        description: "Spotify transactions (subset of Walmart data)"
+        columns:
+          - name: order_id
+            description: "Spotify order ID"
+            tests:
+              - not_null
+              - unique
+          - name: product_sku
+            description: "Product SKU"
+            tests:
+              - not_null
+          - name: category
+            description: "Product category"
+          - name: quantity_sold
+            description: "Quantity sold"
+            tests:
+              - not_null
+          - name: unit_price
+            description: "Unit price"
+            tests:
+              - not_null
+          - name: transaction_date
+            description: "Date and time of transaction"
+            tests:
+              - not_null
+          - name: payment_method
+            description: "Payment method used"
+          - name: sales_amount
+            description: "Total sales amount"
+            tests:
+              - not_null

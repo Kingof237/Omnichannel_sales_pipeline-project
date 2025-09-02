@@ -1,0 +1,26 @@
+name: 'omni_dbt'
+version: '1.0.0'
+config-version: 2
+profile: 'omniw_dbt'
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+  - "dbt_modules"
+  - "logs"
+seeds:
+  +schema: omni_lake
+  +quote_columns: false
+models:
+  omni_dbt:
+    +materialized: table
+    staging:
+      +schema: omni_staging
+    marts:
+      +schema: omni_mart

@@ -1,0 +1,2 @@
+Ignore Airflow's own log directory within the DAGs folder
+/logs

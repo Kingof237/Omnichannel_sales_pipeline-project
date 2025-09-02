@@ -1,0 +1,28 @@
+# Postgres
+POSTGRES_USER=your_postgres_user
+POSTGRES_PASSWORD=your_postgres_password
+POSTGRES_DB=your_postgres_db
+POSTGRES_DB_OMNICHANNEL=your_omnichannel_db
+
+# Airflow
+AIRFLOW_ADMIN_USER=your_airflow_admin_user
+AIRFLOW_ADMIN_PASSWORD=your_airflow_admin_password
+AIRFLOW_WEBSERVER_SECRET_KEY=your_airflow_secret_key
+
+# Mockaroo API
+MOCKAROO_API_KEY=your_mockaroo_api_key
+MOCKAROO_SCHEMA_ID=your_mockaroo_schema_id
+MOCKAROO_NUM_ROWS=1000
+
+# Omnichannel DB
+PG_USER=your_db_user
+PG_PASSWORD=your_db_password
+PG_HOST=your_db_host
+PG_PORT=5432
+PG_DATABASE=your_db_name
+PG_SCHEMA=your_db_schema
+PG_TABLE=walmart_sales
+PG_TABLE1=spotify_data
+
+# Kaggle
+KAGGLE_CONFIG_DIR=/path/to/kaggle/config
