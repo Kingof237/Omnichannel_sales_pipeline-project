@@ -31,12 +31,6 @@ FROM apache/airflow:2.9.1-python3.11
 
 WORKDIR /opt/airflow
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
 # Install dbt
 RUN pip install dbt-core dbt-postgres
 
-# Don’t copy DAGs here – they will be mounted via docker-compose
->>>>>>> 2ab5067631736bb00f03c20667a806258a294d52
