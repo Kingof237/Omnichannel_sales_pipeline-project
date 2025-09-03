@@ -22,13 +22,9 @@ COPY dags/ /opt/airflow/dags/
 # Copy requirements
 COPY requirements.txt .
 
-
-
 # Install Python dependencies (Airflow already installed)
 RUN pip install --no-cache-dir -r requirements.txt
 =======
-FROM apache/airflow:2.9.1-python3.11
-
 WORKDIR /opt/airflow
 
 # Install dbt
